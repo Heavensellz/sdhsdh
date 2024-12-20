@@ -950,7 +950,7 @@ task.spawn(function()
 			local Root, Hum = Player.Character:WaitForChild("HumanoidRootPart"), Player.Character:WaitForChild("Humanoid")
 			local Start = os.time()
 			repeat 
-				Player.Character.HumanoidRootPart.CFrame = CFrame.new(0, 500, 0)
+				Player.Character.HumanoidRootPart.CFrame = CFrame.new(0, 0, 0)
 				EMPTY.Text = "| Finding ATM."
 				
 				Cashier, Dist, Index = GetCashier() 
@@ -998,8 +998,17 @@ task.spawn(function()
 				Attack()
 			until (Cashier.Humanoid.Health <= 0) or (IsDead() == true) or (Shutdown == true) or (os.time()-Start>=16)
 
-			
-			Root.CFrame = CFrame.new(Cashier.Head.Position) + Vector3.new(math.random(-2, 2), 1, math.random(-2, 2))
+            local position = Cashier.Head.Position
+            local currentCFrame = Root.CFrame
+            local distance = (position.p - currentCFrame.p).Magnitude
+            local steps = math.floor(distance / 5) -- Adjust the step size as needed
+            local stepSize = distance / steps
+
+            for i = 1, steps do
+                local newCFrame = currentCFrame:Lerp(position, i / steps)
+                Root.CFrame = newCFrame
+                task.wait(0.1) -- Adjust the wait time as needed
+            end
 			
 			EMPTY.Text = "| Picking Cash."
 
